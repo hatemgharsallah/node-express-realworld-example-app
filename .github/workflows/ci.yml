@@ -90,16 +90,16 @@ jobs:
 
       - name: Build Docker image
         run: docker build -t realworld-api .
-      - name: Run API Container
+      - name: Run API Container (SQLite)
         run: |
           docker run -d --name api -p 3000:3000 \
-          -e DATABASE_URL="postgresql://postgres:postgres@localhost:5432/realworld?schema=public" \
+          -e DATABASE_URL="file:./dev.db" \
           -e JWT_SECRET="test_secret" \
           realworld-api
 
       - name: Wait for API to be ready
         run: |
-          for i in {1..29}; do
+          for i in {1..50}; do
             STATUS=$(curl -s -o /dev/null -w "%{http_code}" http://localhost:3000/api/articles || true)
             if [ "$STATUS" = "200" ]; then
               exit 0
