@@ -48,6 +48,31 @@ jobs:
         run: npx prisma db seed
 
       - run: npm run build
+  sast:
+    name: Static Security Analysis (Semgrep)
+    runs-on: ubuntu-latest
+    needs: build-test
 
+    steps:
+      - uses: actions/checkout@v4
 
+      - name: Install Semgrep
+        run: pip install semgrep
 
+      - name: Run Semgrep Scan
+        run: semgrep --config=p/owasp-top-ten --error
+  sca:
+    name: Dependency Vulnerability Scan (Trivy)
+    runs-on: ubuntu-latest
+    needs: build-test
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan for High/Critical Vulnerabilities
+        uses: aquasecurity/trivy-action@0.23.0
+        with:
+          scan-type: fs
+          severity: CRITICAL,HIGH
+          exit-code: 1
+          ignore-unfixed: true
