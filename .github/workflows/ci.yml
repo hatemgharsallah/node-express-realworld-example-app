@@ -47,9 +47,12 @@ jobs:
       - name: Apply Migrations
         run: npx prisma migrate deploy
 
+      - name: Seed database for testing
+        run: npx prisma db seed
+
       - name: Build App
         run: npm run build
 
-      - name: Run Tests (optional)
+      - name: Run Tests
         run: npm test --if-present
 
