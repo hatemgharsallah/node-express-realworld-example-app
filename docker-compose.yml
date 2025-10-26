@@ -1,0 +1,32 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16
+    container_name: realworld_db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: HatemPostgres123+
+      POSTGRES_DB: realworld
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: realworld_api
+    depends_on:
+      - db
+    ports:
+      - "3000:3000"
+    environment:
+      DATABASE_URL: postgresql://postgres:HatemPostgres123+@db:5432/realworld?schema=public
+      JWT_SECRET: HELLOOOOO_MYYYYYYYYYYYYYY
+      NODE_ENV: production
+
+volumes:
+  postgres_data:
